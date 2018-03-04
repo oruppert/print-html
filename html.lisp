@@ -1,3 +1,25 @@
+;; * Overview
+
+;; This program is an HTML generator for Common Lisp.
+
+;; Why another one?
+
+;; The libraries known to me (cl-who) transform symbolic expressions
+;; into a series of print statements that generate HTML as a side
+;; effect.
+
+;; These side effects complicate the use of functional abstractions:
+
+;; - HTML can not be stored in variables.
+
+;; - HTML can not be used as a function argument or return value.
+
+;; - HTML can not be changed programmatically.
+
+;; - HTML is not a real data type.
+
+;; * Code
+
 (defpackage html
   (:use :common-lisp)
   (:export :render :print-html :print-html-to-string :html))
