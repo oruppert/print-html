@@ -26,10 +26,6 @@
 
 (in-package :html)
 
-(defgeneric render (object)
-  (:method (object)
-    (princ-to-string object)))
-
 (defgeneric print-html (object stream)
   (:method (object stream)
     (print-html (render object) stream))
@@ -45,6 +41,10 @@
   (:method ((list list) stream)
     (dolist (object list)
       (print-html object stream))))
+
+(defgeneric render (object)
+  (:method (object)
+    (princ-to-string object)))
 
 (defun print-html-to-string (object)
   (with-output-to-string (stream)
