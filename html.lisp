@@ -59,6 +59,9 @@
     (dolist (object list)
       (print-html object stream))))
 
+;; Print /OBJECT/ to string.  Note: This function is also used to
+;; escape attributes.
+
 (defun print-html-to-string (object)
   (with-output-to-string (stream)
     (print-html object stream)))
@@ -80,12 +83,18 @@
   (unless (member (tag-name self) (list :input))
     (format stream "</~(~a~)>~&" (tag-name self))))
 
-;; * Html Dsl 
+;; * Html DSL 
 
 ;; Macroexpand example:
 
 ;; The code
-;; ~(print-html-to-string (html ((:span :style "color:blue") "text")))~
+
+;; #+begin_example
+;;  (print-html-to-string
+;;    (html
+;;      ((:span :style "color:blue") "text")))
+;; #+end_example
+
 ;; expands to
 
 ;; #+begin_example
@@ -103,6 +112,8 @@
 ;; "<span style=\"color:blue\">text</span>"
 ;; #+end_example
 
+;; The html generation macro: 
+
 (defmacro html (&body body)
   (labels ((listify (x) (if (listp x) x (list x)))
            (codegen (x)
@@ -114,7 +125,16 @@
                                      :children (html ,@body))))))))
     `(list ,@(mapcar #'codegen body))))
 
-;; * Unsafe
+;; * Extending the Html package
+
+;; ** Doctype
+
+;; Print doctype.
+
+(defmethod print-html ((self (eql :doctype-html)) stream)
+  (format stream "<!doctype html>~&"))
+
+;; ** Unsafe
 
 ;; Print string without escaping
 
@@ -122,3 +142,5 @@
 
 (defmethod print-html ((unsafe unsafe) stream)
   (write-string (unsafe-string unsafe) stream))
+
+

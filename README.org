@@ -63,7 +63,12 @@ for.
   (:method ((list list) stream)
     (dolist (object list)
       (print-html object stream))))
+#+end_src
 
+Print /OBJECT/ to string.  Note: This function is also used to
+escape attributes.
+
+#+begin_src lisp
 (defun print-html-to-string (object)
   (with-output-to-string (stream)
     (print-html object stream)))
@@ -88,12 +93,18 @@ for.
     (format stream "</~(~a~)>~&" (tag-name self))))
 #+end_src
 
-* Html Dsl 
+* Html DSL 
 
 Macroexpand example:
 
 The code
-~(print-html-to-string (html ((:span :style "color:blue") "text")))~
+
+#+begin_example
+ (print-html-to-string
+   (html
+     ((:span :style "color:blue") "text")))
+#+end_example
+
 expands to
 
 #+begin_example
@@ -111,6 +122,8 @@ and evaluates to
 "<span style=\"color:blue\">text</span>"
 #+end_example
 
+The html generation macro: 
+
 #+begin_src lisp
 (defmacro html (&body body)
   (labels ((listify (x) (if (listp x) x (list x)))
@@ -124,7 +137,18 @@ and evaluates to
     `(list ,@(mapcar #'codegen body))))
 #+end_src
 
-* Unsafe
+* Extending the Html package
+
+** Doctype
+
+Print doctype.
+
+#+begin_src lisp
+(defmethod print-html ((self (eql :doctype-html)) stream)
+  (format stream "<!doctype html>~&"))
+#+end_src
+
+** Unsafe
 
 Print string without escaping
 
