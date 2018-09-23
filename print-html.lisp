@@ -28,6 +28,13 @@
 
 (in-package :print-html)
 
+;; * Self closing tags
+
+(defvar *self-closing-tags*
+  (list :area :base :br :col :command :embed :frame :hr :img :input :keygen
+	:link :menuitem :meta :param :source :track :wbr)
+  "List of self closing tags.")
+
 ;; * Render
 
 ;; The /RENDER/ method is called by /PRINT-HTML/ to map an
@@ -80,7 +87,7 @@
 	     collect (print-html-to-string (if (eq v t) k v)))))
 
 (defmethod print-html :after ((self tag) stream)
-  (unless (member (tag-name self) (list :input))
+  (unless (member (tag-name self) *self-closing-tags*)
     (format stream "</~(~a~)>~&" (tag-name self))))
 
 ;; * Html DSL 
@@ -125,7 +132,7 @@
                                      :children (html ,@body))))))))
     `(list ,@(mapcar #'codegen body))))
 
-;; * Extending the Html package
+;; * Extending the Print-Html package
 
 ;; ** Doctype
 
