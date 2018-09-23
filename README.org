@@ -23,11 +23,20 @@ escaped Html.
 We only use common-lisp.
 
 #+begin_src lisp
-(defpackage html
+(defpackage print-html
   (:use :common-lisp)
   (:export :render :print-html :print-html-to-string :html :unsafe))
 
-(in-package :html)
+(in-package :print-html)
+#+end_src
+
+* Self closing tags
+
+#+begin_src lisp
+(defvar *self-closing-tags*
+  (list :area :base :br :col :command :embed :frame :hr :img :input :keygen
+	:link :menuitem :meta :param :source :track :wbr)
+  "List of self closing tags.")
 #+end_src
 
 * Render
@@ -89,7 +98,7 @@ escape attributes.
 	     collect (print-html-to-string (if (eq v t) k v)))))
 
 (defmethod print-html :after ((self tag) stream)
-  (unless (member (tag-name self) (list :input))
+  (unless (member (tag-name self) *self-closing-tags*)
     (format stream "</~(~a~)>~&" (tag-name self))))
 #+end_src
 
@@ -137,7 +146,7 @@ The html generation macro:
     `(list ,@(mapcar #'codegen body))))
 #+end_src
 
-* Extending the Html package
+* Extending the Print-Html package
 
 ** Doctype
 
