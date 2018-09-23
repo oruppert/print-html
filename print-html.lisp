@@ -22,11 +22,11 @@
 
 ;; We only use common-lisp.
 
-(defpackage html
+(defpackage print-html
   (:use :common-lisp)
   (:export :render :print-html :print-html-to-string :html :unsafe))
 
-(in-package :html)
+(in-package :print-html)
 
 ;; * Render
 
